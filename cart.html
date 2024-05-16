@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart</title>
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"/>
+    <link rel="stylesheet" href="style.css">
+   <style>
+    #receipt-container {
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-top: 10px;
+        display: none; 
+    }
+</style>
+</head>
+<body>
+    <section id="header">
+        <a href="#"><img src="LOGO (2).png" class="your image" alt=""></a>
+        <div>
+            <ul id="navbar">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="shop.html">Shop</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li id="lg-bag"><a class="active" href="cart.html"><i class="fas fa-shopping-bag"></i></a></li>
+            </ul>
+        </div>
+    </section>
+    
+    <section id="page-header" class="about-header">
+        <h2>My Cart</h2>
+        <p>Add your coupon code & SAVE up to 30%!</p>
+    </section>
+    
+    <section id="cart" class="section-p1">
+        <table width="100%">
+            <thead>
+                <tr>
+                    <td>Remove</td>
+                    <td>Image</td>
+                    <td>Product</td>
+                    <td>Price</td>
+                    <td>Quantity</td>
+                    <td>Subtotal</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><i class="far fa-times-circle"></i><a href="#"></a></td>
+                    <td><img src="productc.jpg" alt=""></td>
+                    <td>Prada Elegant Bag</td>
+                    <td>PHP 5000</td>
+                    <td><input type="number" value="0"></td>
+                    <td>PHP 5000</td>
+                </tr>
+                <tr>
+                    <td><i class="far fa-times-circle"></i><a href="#"></a></td>
+                    <td><img src="product8.jpg" alt=""></td>
+                    <td>JW Anderson Chain-embellished Bag</td>
+                    <td>PHP 15000</td>
+                    <td><input type="number" value="0"></td>
+                    <td>PHP 15000</td>
+                </tr>
+                <tr>
+                    <td><i class="far fa-times-circle"></i><a href="#"></a></td>
+                    <td><img src="product9.jpg" alt=""></td>
+                    <td>Gabine Lether</td>
+                    <td>PHP 9000</td>
+                    <td><input type="number" value="0"></td>
+                    <td>PHP 9000</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+    
+    <section id="cart-add" class="section-p1 center">
+        <div id="subtotal">
+            <h3>Cart Totals</h3>
+            <table>
+                <tr>
+                    <td>Cart Subtotal</td>
+                    <td id="cart-subtotal"> PHP 0.00</td>
+                </tr>
+                <tr>
+                    <td>Shipping</td>
+                    <td id="shipping-fee">Free</td> 
+                </tr>
+                <tr>
+                    <td><strong>Total</strong></td>
+                    <td id="cart-total"><strong>PHP 0.00</strong></td> 
+                </tr>
+            </table>
+            <button id="checkout-btn" class="normal">Proceed to Checkout</button>
+        </div>
+    </section>
+
+    <div id="receipt-container">
+        <h3>Receipt</h3>
+        <pre id="receipt-content"></pre>
+    </div>
+    
+    <footer class="section-p1">
+    </footer>
+    
+    <script>
+        function generateReceipt() {
+            let receipt = "Receipt:\n\n";
+            let totalAmount = 0; 
+            document.querySelectorAll('#cart tbody tr').forEach(row => {
+                const productName = row.querySelector('td:nth-child(3)').textContent;
+                const priceText = row.querySelector('td:nth-child(4)').textContent;
+                const price = parseFloat(priceText.split(' ')[1]); 
+                const quantity = parseInt(row.querySelector('td:nth-child(5) input').value);
+                const subtotal = price * quantity;
+                totalAmount += subtotal; 
+                receipt += `${productName} - ${priceText} x ${quantity} = PHP ${subtotal}\n`;
+            });
+            receipt += `\nTotal: PHP ${totalAmount.toFixed(2)}`; 
+           
+            document.getElementById('receipt-content').textContent = receipt;
+            document.getElementById('receipt-container').style.display = 'block';
+        }
+        
+        function calculateTotal() {
+            let total = 0;
+            document.querySelectorAll('#cart tbody tr').forEach(row => {
+                const price = parseFloat(row.querySelector('td:nth-child(4)').textContent.split(' ')[1]); 
+                const quantity = parseInt(row.querySelector('td:nth-child(5) input').value);
+                total += price * quantity;
+            });
+            return total.toFixed(2);
+        }
+    
+        function updateTotal() {
+            const cartTotal = calculateTotal();
+            document.querySelector('#cart-subtotal').textContent = 'PHP ' + cartTotal;
+            document.querySelector('#cart-total').textContent = 'PHP ' + cartTotal;
+            
+            const cartItems = document.querySelectorAll('#cart tbody tr');
+            const cartAddSection = document.getElementById('cart-add');
+            if (cartItems.length > 0) {
+                cartAddSection.style.display = 'block';
+            } else {
+                cartAddSection.style.display = 'none';
+            }
+        }
+    
+        document.querySelectorAll('#cart input[type="number"]').forEach(input => {
+            input.addEventListener('input', updateTotal);
+        });
+    
+        document.querySelector('#checkout-btn').addEventListener('click', () => {
+            generateReceipt(); 
+            alert("Checkout Completed!"); 
+        });
+    
+        updateTotal();
+    </script>
+</body>
+</html>
